@@ -144,19 +144,30 @@
       <message name="INS_REF"           period="5.1"/>
     </mode>
 
+    <mode name="SysID">
+      <message name="STAB_ATTITUDE_REF_INT"  period=".2"/>
+      <message name="ROTORCRAFT_CMD"         period=".2"/> 
+      <message name="IMU_GYRO_SCALED"        period=".2"/>
+      <message name="IMU_ACCEL_SCALED"       period=".2"/>
+      <message name="IMU_MAG_SCALED"         period=".5"/>
+      <message name="AHRS_GYRO_BIAS_INT"     period=".2"/>
+      <message name="AHRS_EULER_INT"         period=".2"/>
+      <message name="BARO_RAW"               period=".2"/>
+    </mode>
+
     <mode name="empty"></mode>
 
   </process>
   <process name="Logger">
     <mode name="default">
-      <message name="STAB_ATTITUDE_REF_INT"  period=".02"/>
-      <message name="ROTORCRAFT_CMD"         period=".02"/> 
-      <message name="IMU_GYRO_SCALED"        period=".02"/>
-      <message name="IMU_ACCEL_SCALED"       period=".02"/>
-      <message name="IMU_MAG_SCALED"         period=".1"/>
-      <message name="AHRS_GYRO_BIAS_INT"     period=".02"/>
-      <message name="AHRS_EULER_INT"         period=".02"/>
-      <message name="BARO_RAW"               period=".1"/>
+      <message name="STAB_ATTITUDE_REF_INT"  period=".01"/>
+      <message name="ROTORCRAFT_CMD"         period=".01"/> 
+      <message name="IMU_GYRO_SCALED"        period=".01"/>
+      <!--message name="IMU_ACCEL_SCALED"       period=".01"/-->
+      <!--message name="IMU_MAG_SCALED"         period=".1"/-->
+      <!--message name="AHRS_GYRO_BIAS_INT"     period=".02"/-->
+      <message name="AHRS_EULER_INT"         period=".01"/>
+      <!--message name="BARO_RAW"               period=".1"/-->
     </mode>
   </process>
 
