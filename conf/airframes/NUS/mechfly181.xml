@@ -1,0 +1,261 @@
+<!-- this is a tailled FlowerFly Flapping Wing frame equiped with Lisa/S 1.0 -->
+<!-- The Tailled FlowerFly frame comes with one brushless motors, one servo for yaw, and one servo for pitch. -->
+
+<!--
+     The motor and control serfaces configuration is the following:
+	    Top                     Top
+             ^                       ^
+             |                       |
+           Motor                   Motor
+    _________|_________     _________|_________
+   |         |         |   |         |         |
+   | Left    |   Right |   | Back    |   Front |
+    \ Wings  |  Wings /     \ Wings  |  Wings /
+     \_______|_______/       \_______|_______/
+       ______|______                 |
+      |   Aileron   |                |
+      |______|______|                |
+             |                       |
+             |                       |
+             |                       |
+         ____|____               ____|____
+        /    |    \             /    |    \
+       /_____|_____\           /_____|_____\
+       |  Elevator |           |  Rudder   |
+       |_____|_____|           |_____|_____|
+                   
+    The Lisa/S is rotated by 90deg in pitch. Platform flies vertically, aileron is used for yaw control, rudder is used for roll control
+-->
+
+<!--
+     Applicable configuration:
+     airframe="airframes/examples/ladybird_lisa_s.xml"
+     radio="radios/cockpitSX.xml"
+     telemetry="telemetry/default_rotorcraft.xml"
+     flight_plan="flight_plans/rotorcraft_basic.xml"
+     settings="settings/rotorcraft_basic.xml settings/control/rotorcraft_guidance.xml settings/control/stabilization_att_int.xml settings/control/stabilization_rate.xml"
+-->
+
+<airframe name="mechfly181">
+
+  <servos driver="Pwm">
+    <servo name="motorR" no="0" min="1000" neutral="1000" max="2000"/>    
+    <servo name="servoR" no="1" min="1000" neutral="1500" max="2000"/>
+    <servo name="motorL" no="2" min="1000" neutral="1000" max="2000"/> 
+    <servo name="servoL" no="4" min="1000" neutral="1500" max="2000"/>
+  </servos>
+
+  <commands>
+    <axis name="PITCH"  failsafe_value="0"/>
+    <axis name="ROLL"   failsafe_value="0"/>
+    <axis name="YAW"    failsafe_value="0"/>
+    <axis name="THRUST" failsafe_value="0"/>
+  </commands>
+
+  <command_laws>
+    <!--call fun="motor_mixing_run(autopilot_motors_on,FALSE,values)"/-->
+    <set servo="motorR" value="@THRUST"/>
+    <set servo="motorL" value="@THRUST*1.35"/>    
+    <set servo="servoL" value="@PITCH" />
+    <set servo="servoR" value="@ROLL"  />
+  </command_laws>
+
+  <!--section name="MIXING" prefix="MOTOR_MIXING_">
+    <define name="TRIM_ROLL" value="0"/>
+    <define name="TRIM_PITCH" value="0"/>
+    <define name="TRIM_YAW" value="0"/>
+    <define name="NB_MOTOR" value="4"/>
+    <define name="SCALE" value="256"/>
+    <define name="ROLL_COEF" value="{  -256, -256,  256,  256 }"/>
+    <define name="PITCH_COEF" value="{  256, -256, -256,  256 }"/>
+    <define name="YAW_COEF" value="{    256, -256,  256, -256 }"/>
+    <define name="THRUST_COEF" value="{ 256,  256,  256,  256 }"/>
+  </section-->
+  
+  <section name="IMU" prefix="IMU_">
+    <define name="BODY_TO_IMU_PHI"   value="270." unit="deg"/>
+    <define name="BODY_TO_IMU_THETA" value="0."   unit="deg"/>
+    <define name="BODY_TO_IMU_PSI"   value="0."   unit="deg"/>
+
+    <define name="ACCEL_X_NEUTRAL" value="0"/>
+    <define name="ACCEL_Y_NEUTRAL" value="0"/>
+    <define name="ACCEL_Z_NEUTRAL" value="0"/>
+
+    <!-- MAGNETO CALIBRATION DELFT -->
+    <define name="MAG_X_NEUTRAL" value="286"/>
+    <define name="MAG_Y_NEUTRAL" value="-72"/>
+    <define name="MAG_Z_NEUTRAL" value="97" />
+    <define name="MAG_X_SENS"    value="3.94431833863" integer="16"/>
+    <define name="MAG_Y_SENS"    value="4.14629702271" integer="16"/>
+    <define name="MAG_Z_SENS"    value="4.54518768636" integer="16"/>
+
+    <!-- MAGNETO CURRENT CALIBRATION -->
+    <define name="MAG_X_CURRENT_COEF" value="0.0103422023767"/>
+    <define name="MAG_Y_CURRENT_COEF" value="0.0084568317783"/>
+    <define name="MAG_Z_CURRENT_COEF" value="-0.01935617335" />
+  </section>
+
+ <section name="AUTOPILOT">
+   <define name="MODE_STARTUP" value="AP_MODE_ATTITUDE_DIRECT"/>
+   <define name="MODE_MANUAL"  value="AP_MODE_ATTITUDE_DIRECT"/>
+   <define name="MODE_AUTO1"   value="AP_MODE_ATTITUDE_Z_HOLD"/>
+   <define name="MODE_AUTO2"   value="AP_MODE_ATTITUDE_Z_HOLD"/>
+   <!--define name="MODE_AUTO2" value="AP_MODE_ATTITUDE_DIRECT"/-->   
+   <!--define name="MODE_AUTO2" value="AP_MODE_NAV"/-->
+ </section>
+
+ <section name="BAT">
+   <define name="MILLIAMP_AT_FULL_THROTTLE" value="14000"       />
+   <define name="CATASTROPHIC_BAT_LEVEL"    value="3.0" unit="V"/>
+   <define name="CRITIC_BAT_LEVEL"          value="3.3" unit="V"/>
+    <define name="LOW_BAT_LEVEL"            value="3.5" unit="V"/>
+    <define name="MAX_BAT_LEVEL"            value="4.1" unit="V"/>
+ </section>
+
+  <section name="STABILIZATION_RATE" prefix="STABILIZATION_RATE_">
+    <define name="SP_MAX_P" value="210" unit="deg/s"/>
+    <define name="SP_MAX_Q" value="210" unit="deg/s"/>
+    <define name="SP_MAX_R" value="210" unit="deg/s"/>
+
+    <define name="GAIN_P" value="400"/>
+    <define name="GAIN_Q" value="400"/>
+    <define name="GAIN_R" value="418"/>
+
+    <define name="IGAIN_P" value="301"/>
+    <define name="IGAIN_Q" value="302"/>
+    <define name="IGAIN_R" value="303"/>
+  </section>
+
+  <section name="STABILIZATION_ATTITUDE" prefix="STABILIZATION_ATTITUDE_">
+
+    <!-- setpoints -->
+    <define name="SP_MAX_PHI"   value="60."  unit="deg"  />
+    <define name="SP_MAX_THETA" value="60."  unit="deg"  />
+    <define name="SP_MAX_PSI"   value="180." unit="deg"  />
+    <define name="SP_MAX_R"     value="90."  unit="deg/s"/>
+    <define name="SP_MAX_P"     value="90."  unit="deg/s"/>
+    <define name="DEADBAND_R"   value="250"              />
+    <define name="DEADBAND_A"   value="250"              />
+
+    <!-- reference -->
+    <define name="REF_OMEGA_P"  value="800"  unit="deg/s"/>
+    <define name="REF_ZETA_P"   value="0.85"             />
+    <define name="REF_MAX_P"    value="400." unit="deg/s"/>
+    <define name="REF_MAX_PDOT" value="RadOfDeg(8000.)"  />
+
+    <define name="REF_OMEGA_Q"  value="800"  unit="deg/s"/>
+    <define name="REF_ZETA_Q"   value="0.85"             />
+    <define name="REF_MAX_Q"    value="400." unit="deg/s"/>
+    <define name="REF_MAX_QDOT" value="RadOfDeg(8000.)"  />
+
+    <define name="REF_OMEGA_R"  value="500"  unit="deg/s"/>
+    <define name="REF_ZETA_R"   value="0.85"             />
+    <define name="REF_MAX_R"    value="90."  unit="deg/s"/>
+    <define name="REF_MAX_RDOT" value="RadOfDeg(900.)"   />
+
+    <!-- feedback -->
+    <define name="PHI_PGAIN" value="2000"/>
+    <define name="PHI_DGAIN" value="800" />
+    <define name="PHI_IGAIN" value="100" />
+
+    <define name="THETA_PGAIN" value="2000"/>
+    <define name="THETA_DGAIN" value="800" />
+    <define name="THETA_IGAIN" value="100" />
+
+    <define name="PSI_PGAIN" value="2000"/>
+    <define name="PSI_DGAIN" value="1500"/>
+    <define name="PSI_IGAIN" value="10"  />
+
+    <!-- feedforward -->
+    <define name="PHI_DDGAIN"   value="0"  />
+    <define name="THETA_DDGAIN" value="0"  />
+    <define name="PSI_DDGAIN"   value="300"/>
+
+    <define name="PHI_AGAIN"   value="0"/>
+    <define name="THETA_AGAIN" value="0"/>
+    <define name="PSI_AGAIN"   value="0"/>
+  </section>
+
+  <section name="INS" prefix="INS_">
+  </section>
+
+  <section name="GUIDANCE_V" prefix="GUIDANCE_V_">
+   <define name="HOVER_KP" value="276"/>
+   <define name="HOVER_KD" value="455"/>
+   <define name="HOVER_KI" value="100"/>
+   <define name="GUIDANCE_V_NOMINAL_HOVER_THROTTLE" value="0.5"/>
+  </section>
+
+  <section name="AHRS" prefix="AHRS_">
+    <define name="H_X" value=" 0.47577"/>
+    <define name="H_Y" value=" 0.11811"/>
+    <define name="H_Z" value=" 0.87161"/>
+  </section>
+
+  <section name="GUIDANCE_H" prefix="GUIDANCE_H_">
+    <define name="PGAIN" value="39"/>
+    <define name="DGAIN" value="50"/>
+    <define name="IGAIN" value="19"/>
+  </section>
+
+  <modules main_freq="512">
+    <load name="gps_ubx_ucenter.xml"/>
+    <load name="send_imu_mag_current.xml"/>
+    <module name="logger_sd_spi_direct">
+      <!--define name="SDLOGGER_ON_ARM" value="TRUE"/-->
+      <configure name="LOGGER_CONTROL_SWITCH" value="RADIO_FLAP"/>
+      <!--configure name="LOGGER_LED" value="3"/-->
+</module>
+  </modules>
+
+  <define name="USE_BAROMETER" value="TRUE"/>
+
+  <firmware name="rotorcraft">
+    <target name="ap" board="lisa_s_1.0">
+
+      <!-- subsystem name="radio_control" type="superbitrf_rc"-->
+	<!-- To store the binding parameters for the superbit radio in your
+             airframe file uncomment the following three lines and set the
+             correct values based on the output of the superbitrf telemetry
+             messages. -->
+        <!--define name="RADIO_TRANSMITTER_ID" value="1335259868"/--> <!-- Esden (1BitSquared) Dx6i: TX 1 -->
+        <!--define name="RADIO_TRANSMITTER_CHAN" value="6"/-->
+        <!--define name="RADIO_TRANSMITTER_PROTOCOL" value="0x01"/-->
+        <!--define name="RADIO_MODE" value="RADIO_GEAR"/-->
+        <!--define name="RADIO_AUTO_MODE" value="RADIO_FLAP"/-->
+        <!--<define name="RADIO_KILL_SWITCH" value="RADIO_FLAP"/>-->
+      <!--/subsystem-->
+
+      <subsystem name="radio_control" type="ppm">
+        <configure name="RADIO_CONTROL_PPM_PIN" value="SERVO6"/>
+        <define name="USE_PERSISTENT_SETTINGS" value="TRUE"/> 
+      </subsystem>
+
+      <configure name="AHRS_PROPAGATE_FREQUENCY" value="500"/>           
+    </target>
+
+    <subsystem name="actuators" type="pwm">
+      <define name="SERVO_HZ" value="50"/>
+      <define name="USE_SERVOS_1AND2"/>
+    </subsystem>
+
+    <subsystem name="telemetry" type="transparent">
+      <configure name="MODEM_BAUD" value="B115200"/>
+      <configure name="MODEM_PORT" value="UART1"/>
+    </subsystem>
+
+    <subsystem name="imu" type="lisa_s_v1.0"/>
+
+    <subsystem name="gps" type="ublox"/>
+
+    <subsystem name="stabilization" type="int_quat"/>
+
+    <subsystem name="ahrs" type="int_cmpl_quat">
+      <define name="AHRS_GRAVITY_HEURISTIC_FACTOR" value="0"/>
+      <define name="AHRS_PROPAGATE_LOW_PASS_RATES" value="TRUE"/>
+    </subsystem>
+    
+    <subsystem name="ins"/>
+     
+  </firmware>
+</airframe>
